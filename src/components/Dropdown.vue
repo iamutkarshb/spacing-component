@@ -91,7 +91,7 @@ export default defineComponent({
 }
 
 .dropdown-title {
-  font-family: Inter;
+  font-family: var(--font-family-base);
   font-weight: 700;
   padding: 0px 7px;
   font-style: Bold;
@@ -104,7 +104,7 @@ export default defineComponent({
 }
 
 .dropdown-item {
-  font-family: Inter;
+  font-family: var(--font-family-base);
   font-weight: 400;
   font-style: Regular;
   font-size: 8px;

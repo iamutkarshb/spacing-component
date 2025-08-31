@@ -1,4 +1,3 @@
-// Dropdown.stories.ts
 import Dropdown from '@components/Dropdown.vue';
 import { ref, watch } from 'vue';
 import type { Meta, StoryFn } from '@storybook/vue3';
