@@ -5,17 +5,22 @@ import type { Meta, StoryFn } from '@storybook/vue3';
 export default {
   title: 'Components/Input',
   component: Input,
+  tags: ['autodocs'],
   argTypes: {
-    title: { control: 'text' },
-    placeholder: { control: 'text' },
+    title: { control: 'text', description: 'Accessible label for the input' },
+    placeholder: { control: 'text', description: 'Placeholder text inside the input' },
     type: {
       control: { type: 'select' },
       options: ['text', 'number', 'email', 'password'],
+      description: 'Type of the input field',
     },
-    modelValue: { control: 'text' },
-    maxLength: { control: 'number' },
-    readonly: { control: 'boolean' },
-    disabled: { control: 'boolean' },
+    modelValue: {
+      control: 'text',
+      description: 'The value bound via v-model',
+    },
+    maxLength: { control: 'number', description: 'Maximum number of characters allowed' },
+    readonly: { control: 'boolean', description: 'Makes the input field read-only' },
+    disabled: { control: 'boolean', description: 'Disables the input field' },
   },
 } as Meta<typeof Input>;
 

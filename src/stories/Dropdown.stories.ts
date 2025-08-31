@@ -5,11 +5,24 @@ import type { Meta, StoryFn } from '@storybook/vue3';
 export default {
   title: 'Components/Dropdown',
   component: Dropdown,
+  tags: ['autodocs'],
   argTypes: {
-    title: { control: 'text' },
-    dropdownList: { control: 'array' },
-    disabled: { control: 'boolean' },
-    open: { control: 'boolean' },
+    title: {
+      control: 'text',
+      description: 'Label or title for the dropdown',
+    },
+    dropdownList: {
+      control: 'array',
+      description: 'Array of items displayed in the dropdown',
+    },
+    disabled: {
+      control: 'boolean',
+      description: 'Disables the dropdown if true',
+    },
+    open: {
+      control: 'boolean',
+      description: 'Controls whether the dropdown is open',
+    },
   },
 } as Meta<typeof Dropdown>;
 
