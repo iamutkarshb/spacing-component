@@ -1,5 +1,4 @@
-import Spacing from './components/Spacing.vue';
-import type { SpacingProps } from './components/Spacing.vue';
+import Dropdown, { DropdownProps } from './components/Dropdown.vue';
 
-export { Spacing };
-export type { SpacingProps };
+export { Dropdown };
+export type { DropdownProps };

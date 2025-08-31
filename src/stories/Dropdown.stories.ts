@@ -1,0 +1,79 @@
+// Dropdown.stories.ts
+import Dropdown from '@components/Dropdown.vue';
+import { ref, watch } from 'vue';
+import type { Meta, StoryFn } from '@storybook/vue3';
+
+export default {
+  title: 'Components/Dropdown',
+  component: Dropdown,
+  argTypes: {
+    title: { control: 'text' },
+    dropdownList: { control: 'array' },
+    disabled: { control: 'boolean' },
+    open: { control: 'boolean' },
+  },
+} as Meta<typeof Dropdown>;
+
+const Template: StoryFn<typeof Dropdown> = (args) => ({
+  components: { Dropdown },
+  setup() {
+    const showDropdown = ref(args.open);
+    const buttonRef = ref<HTMLElement | null>(null);
+    const selectedItem = ref<string | null>(null);
+
+    const toggleDropdown = () => {
+      showDropdown.value = !showDropdown.value;
+    };
+
+    const onItemClick = (item: string) => {
+      console.log('Selected item:', item);
+      selectedItem.value = item;
+    };
+
+    watch(
+      () => args.open,
+      (newVal) => {
+        showDropdown.value = newVal;
+      }
+    );
+
+    return {
+      args,
+      showDropdown,
+      buttonRef,
+      selectedItem,
+
+      onItemClick,
+      toggleDropdown,
+    };
+  },
+  template: `
+    <div >
+    <div style="display: flex; gap: 8px; align-items: center">
+      <button ref="buttonRef" @click="toggleDropdown">Open Suggestions</button>
+      <div v-if="selectedItem">Selected Item: {{selectedItem}}</div>
+    </div>
+      <Dropdown
+        v-bind="args"
+        :open="showDropdown"
+        :target="buttonRef"
+        @selected="onItemClick"
+      />
+    </div>
+  `,
+});
+
+export const Default = Template.bind({});
+Default.args = {
+  title: 'Suggestions',
+  dropdownList: [
+    { value: 'Set this value to 20px' },
+    { value: 'Set all value to this value' },
+    { value: 'Set this value to auto' },
+    { value: 'Set all values to auto' },
+    { value: 'Unset this value' },
+    { value: 'Unset all values' },
+  ],
+  disabled: false,
+  open: false,
+};
