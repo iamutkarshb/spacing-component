@@ -105,7 +105,7 @@ export default defineComponent({
 
     onMounted(() => {
       window.addEventListener('resize', onWindowChange);
-      window.addEventListener('scroll', onWindowChange, true); // capture scrolls
+      window.addEventListener('scroll', onWindowChange, true);
     });
 
     onBeforeUnmount(() => {

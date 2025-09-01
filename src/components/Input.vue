@@ -11,7 +11,7 @@
       :readonly="readonly"
       :disabled="disabled"
       @input="onInput"
-      @blur="validate"
+      @blur="$emit('blur', $event)"
       @keydown.enter="onEnter"
     />
     <div v-if="errorMessage" class="error">
@@ -32,7 +32,6 @@ export interface InputProps {
   readonly?: boolean;
   disabled?: boolean;
   type?: 'text' | 'number' | 'email' | 'password';
-  onValidate?: (value: string) => boolean | string;
 }
 
 export default defineComponent({
@@ -47,9 +46,8 @@ export default defineComponent({
       type: String as PropType<'text' | 'number' | 'email' | 'password'>,
       default: 'text',
     },
-    onValidate: Function as PropType<(value: string) => boolean | string>,
   },
-  emits: ['update:modelValue'],
+  emits: ['update:modelValue', 'blur'],
   setup(props, { emit }) {
     const inputRef = ref<HTMLInputElement | null>(null);
     const internalValue = ref(props.modelValue);
@@ -67,12 +65,6 @@ export default defineComponent({
       errorMessage.value = null;
     };
 
-    const validate = () => {
-      if (!props.onValidate) return;
-      const result = props.onValidate(internalValue.value);
-      errorMessage.value = result === true ? null : (result as string);
-    };
-
     const onEnter = () => inputRef.value?.blur();
 
     return {
@@ -80,7 +72,6 @@ export default defineComponent({
       inputRef,
       errorMessage,
       onInput,
-      validate,
       onEnter,
     };
   },

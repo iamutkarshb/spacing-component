@@ -35,27 +35,16 @@ const Template: StoryFn<typeof Input> = (args) => {
     }
   );
 
-  const validateFn = (val: string) => {
-    if (args.type === 'email') {
-      return /\S+@\S+\.\S+/.test(val) || 'Invalid email address';
-    }
-    if (args.type === 'number') {
-      return /^\d+$/.test(val) || 'Only numbers allowed';
-    }
-    return true;
-  };
-
   return {
     components: { Input },
     setup() {
-      return { args, value, errorMsg, validateFn };
+      return { args, value, errorMsg };
     },
     template: `
       <div style="width: 300px;">
         <Input
           v-bind="args"
           v-model="value"
-          :onValidate="validateFn"
         >
           <template #error="{ message }">
             <span style="font-weight: bold; color: darkred;">{{ message || 'Error' }}</span>
