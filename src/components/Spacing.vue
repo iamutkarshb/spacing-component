@@ -1,7 +1,6 @@
 <template>
   <div class="spacing-outer">
     <div class="title title-margin">Margins</div>
-
     <div
       v-for="item in marginFields"
       :key="item.side"
@@ -16,7 +15,13 @@
         placeholder="0px"
         :title="item.title"
       />
-      <img src="../assets/icons/dropdownIcon.svg" class="dropdown-icon" />
+      <img
+        src="../assets/icons/dropdownIcon.svg"
+        class="dropdown-icon"
+        @click="openDropdown($event, 'margin', item.side)"
+        role="button"
+        :aria-expanded="isDropdownOpen"
+      />
     </div>
 
     <div class="spacing-middle">
@@ -36,68 +41,122 @@
           placeholder="0px"
           :title="item.title"
         />
-        <img src="../assets/icons/dropdownIcon.svg" class="dropdown-icon" />
+        <img
+          src="../assets/icons/dropdownIcon.svg"
+          class="dropdown-icon"
+          @click="openDropdown($event, 'padding', item.side)"
+          role="button"
+          :aria-expanded="isDropdownOpen"
+        />
       </div>
 
       <slot>
         <div class="responsive-box"></div>
       </slot>
     </div>
+    <Dropdown
+      :open="isDropdownOpen"
+      :dropdownList="dropdownList"
+      :target="dropdownTarget"
+      title="Suggestions"
+      @selected="onDropdownSelected"
+    />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, watch, PropType, computed } from 'vue';
+import {
+  defineComponent,
+  reactive,
+  watch,
+  PropType,
+  ref,
+  onMounted,
+  onBeforeUnmount,
+  nextTick,
+  computed,
+} from 'vue';
 import Dropdown from './Dropdown.vue';
 import Input from './Input.vue';
 import { createFields, isValidCssValue } from '@/utils/utils';
 
 type SizeInput = string | number;
 
+export interface SpacingCustomItemProps {
+  label: string;
+  applyToAll: boolean;
+  valueToApply: string;
+}
+
+export interface SpacingValue {
+  margin?: {
+    top?: SizeInput;
+    right?: SizeInput;
+    bottom?: SizeInput;
+    left?: SizeInput;
+  };
+  padding?: {
+    top?: SizeInput;
+    right?: SizeInput;
+    bottom?: SizeInput;
+    left?: SizeInput;
+  };
+}
+
+export interface SpacingProps {
+  value?: SpacingValue;
+  defaultValue?: SpacingValue | { margin?: string; padding?: string };
+  customOptions?: SpacingCustomItemProps[];
+}
+
 export default defineComponent({
   name: 'Spacing',
   components: { Dropdown, Input },
   props: {
     value: {
-      type: Object as PropType<{
-        margin?: { top?: SizeInput; right?: SizeInput; bottom?: SizeInput; left?: SizeInput };
-        padding?: { top?: SizeInput; right?: SizeInput; bottom?: SizeInput; left?: SizeInput };
-      }>,
+      type: Object as PropType<SpacingValue>,
       default: undefined,
     },
-    defaultValue: { type: String as PropType<string>, default: 'auto' },
+    defaultValue: {
+      type: Object as PropType<SpacingProps['defaultValue']>,
+      default: () => ({
+        margin: 'auto',
+        padding: 'auto',
+      }),
+    },
+    customOptions: {
+      type: Array as PropType<SpacingCustomItemProps[]>,
+      default: () => [],
+    },
   },
-  emits: ['update:value'],
+  emits: ['onUpdate'],
   setup(props, { emit }) {
     const current = reactive({
       margin: {
-        top: (props.value?.margin?.top ?? props.defaultValue) as SizeInput,
-        right: (props.value?.margin?.right ?? props.defaultValue) as SizeInput,
-        bottom: (props.value?.margin?.bottom ?? props.defaultValue) as SizeInput,
-        left: (props.value?.margin?.left ?? props.defaultValue) as SizeInput,
+        top: props.value?.margin?.top ?? props.defaultValue?.margin,
+        right: props.value?.margin?.right ?? props.defaultValue?.margin,
+        bottom: props.value?.margin?.bottom ?? props.defaultValue?.margin,
+        left: props.value?.margin?.left ?? props.defaultValue?.margin,
       },
       padding: {
-        top: (props.value?.padding?.top ?? props.defaultValue) as SizeInput,
-        right: (props.value?.padding?.right ?? props.defaultValue) as SizeInput,
-        bottom: (props.value?.padding?.bottom ?? props.defaultValue) as SizeInput,
-        left: (props.value?.padding?.left ?? props.defaultValue) as SizeInput,
+        top: props.value?.padding?.top ?? props.defaultValue?.padding,
+        right: props.value?.padding?.right ?? props.defaultValue?.padding,
+        bottom: props.value?.padding?.bottom ?? props.defaultValue?.padding,
+        left: props.value?.padding?.left ?? props.defaultValue?.padding,
       },
-    } as {
-      margin: Record<string, SizeInput>;
-      padding: Record<string, SizeInput>;
     });
 
     watch(
       () => props.value,
       (nv) => {
-        current.margin.top = (nv?.margin?.top ?? props.defaultValue) as SizeInput;
-        current.margin.right = (nv?.margin?.right ?? props.defaultValue) as SizeInput;
-        current.margin.bottom = (nv?.margin?.bottom ?? props.defaultValue) as SizeInput;
-        current.margin.left = (nv?.margin?.left ?? props.defaultValue) as SizeInput;
-        current.padding.top = (nv?.padding?.top ?? props.defaultValue) as SizeInput;
-        current.padding.right = (nv?.padding?.right ?? props.defaultValue) as SizeInput;
-        current.padding.bottom = (nv?.padding?.bottom ?? props.defaultValue) as SizeInput;
-        current.padding.left = (nv?.padding?.left ?? props.defaultValue) as SizeInput;
+        current.margin.top = nv?.margin?.top ?? props.defaultValue?.margin;
+        current.margin.right = nv?.margin?.right ?? props.defaultValue?.margin;
+        current.margin.bottom = nv?.margin?.bottom ?? props.defaultValue?.margin;
+        current.margin.left = nv?.margin?.left ?? props.defaultValue?.margin;
+        current.padding.top = nv?.padding?.top ?? props.defaultValue?.padding;
+        current.padding.right = nv?.padding?.right ?? props.defaultValue?.padding;
+        current.padding.bottom = nv?.padding?.bottom ?? props.defaultValue?.padding;
+        current.padding.left = nv?.padding?.left ?? props.defaultValue?.padding;
       },
       { deep: true }
     );
@@ -106,18 +165,8 @@ export default defineComponent({
     const paddingFields = createFields('padding', { vertical: '8px', horizontal: '11px' });
 
     const fullSnapshot = () => ({
-      margin: {
-        top: current.margin.top ?? props.defaultValue,
-        right: current.margin.right ?? props.defaultValue,
-        bottom: current.margin.bottom ?? props.defaultValue,
-        left: current.margin.left ?? props.defaultValue,
-      },
-      padding: {
-        top: current.padding.top ?? props.defaultValue,
-        right: current.padding.right ?? props.defaultValue,
-        bottom: current.padding.bottom ?? props.defaultValue,
-        left: current.padding.left ?? props.defaultValue,
-      },
+      margin: { ...current.margin },
+      padding: { ...current.padding },
     });
 
     const handleChange = (group: 'margin' | 'padding', side: string, value: string) => {
@@ -127,22 +176,109 @@ export default defineComponent({
         current[group][side] = '0px';
       }
 
-      const finalValue = value === '' ? props.defaultValue : inputValue;
+      const finalValue = value === '' ? props.defaultValue[group] : inputValue;
       current[group][side] = finalValue;
       const changed: any = { margin: undefined, padding: undefined };
       changed[group] = { [side]: finalValue };
       const valueSnapshot = fullSnapshot();
-      emit('update:value', JSON.parse(JSON.stringify(valueSnapshot)));
       if (!changed.margin) delete changed.margin;
       if (!changed.padding) delete changed.padding;
-      console.log(JSON.stringify({ changed, value: valueSnapshot }, null, 2));
+      emit('onUpdate', JSON.stringify({ changed, value: valueSnapshot }, null, 2));
     };
+
+    const isDropdownOpen = ref(false);
+    const dropdownTarget = ref<HTMLElement | null>(null);
+    const activeGroup = ref<'margin' | 'padding' | null>(null);
+    const activeSide = ref<string | null>(null);
+
+    const dropdownList = computed<SpacingCustomItemProps[]>(() => [
+      ...(props.customOptions || []),
+      {
+        label: `Set this value to ${props.defaultValue?.[activeGroup.value] ?? ''}`,
+        applyToAll: false,
+        valueToApply: `${props.defaultValue?.[activeGroup.value] ?? ''}`,
+      },
+      {
+        label: `Set all value to this value`,
+        applyToAll: true,
+        valueToApply: `${current?.[activeGroup.value]?.[activeSide.value] ?? ''}`,
+      },
+      { label: 'Set this value to auto', applyToAll: false, valueToApply: 'auto' },
+      { label: 'Set all values to auto', applyToAll: true, valueToApply: 'auto' },
+      { label: 'Unset this value', applyToAll: false, valueToApply: 'unset' },
+      { label: 'Unset all values', applyToAll: true, valueToApply: 'unset' },
+    ]);
+
+    const openDropdown = (event: MouseEvent, group: 'margin' | 'padding', side: string) => {
+      event.stopPropagation();
+      activeGroup.value = group;
+      activeSide.value = side;
+      dropdownTarget.value = event.currentTarget as HTMLElement;
+      nextTick(() => (isDropdownOpen.value = true));
+    };
+
+    const closeDropdown = () => {
+      isDropdownOpen.value = false;
+      dropdownTarget.value = null;
+      activeGroup.value = null;
+      activeSide.value = null;
+    };
+
+    const onDropdownSelected = (item: SpacingCustomItemProps) => {
+      if (!activeGroup.value || !activeSide.value) {
+        closeDropdown();
+        return;
+      }
+
+      const valueSnapshot = fullSnapshot();
+
+      const changed: any = {};
+
+      const group = activeGroup.value;
+      const side = activeSide.value;
+      const val = item.valueToApply ?? props.defaultValue?.[activeGroup.value];
+      if (item.applyToAll) {
+        Object.keys(current[group]).forEach((s) => {
+          current[group][s] = val;
+          changed[group] = { ...changed[group], [s]: val };
+        });
+      } else {
+        current[group][side] = val;
+        changed[group] = { ...changed[group], [side]: val };
+      }
+      emit('onUpdate', JSON.stringify({ changed, value: valueSnapshot }, null, 2));
+      closeDropdown();
+    };
+
+    const handleDocClick = () => {
+      if (isDropdownOpen.value) closeDropdown();
+    };
+    const handleKeydown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isDropdownOpen.value) {
+        closeDropdown();
+      }
+    };
+
+    onMounted(() => {
+      document.addEventListener('click', handleDocClick);
+      window.addEventListener('keydown', handleKeydown);
+    });
+    onBeforeUnmount(() => {
+      document.removeEventListener('click', handleDocClick);
+      window.removeEventListener('keydown', handleKeydown);
+    });
 
     return {
       current,
       marginFields,
       paddingFields,
       handleChange,
+      activeGroup,
+      isDropdownOpen,
+      dropdownTarget,
+      dropdownList,
+      openDropdown,
+      onDropdownSelected,
     };
   },
 });
@@ -163,6 +299,7 @@ export default defineComponent({
 .dropdown-icon {
   transform: scale(2);
   border-width: 1px;
+  cursor: pointer;
 }
 .spacing-input-field {
   position: absolute;

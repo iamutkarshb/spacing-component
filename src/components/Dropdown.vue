@@ -1,5 +1,5 @@
 <template>
-  <teleport :to="target || 'body'">
+  <teleport to="body">
     <div
       v-if="isOpen"
       class="dropdown"
@@ -22,7 +22,7 @@
           class="dropdown-item"
           @click="$emit('selected', item)"
         >
-          {{ item.value }}
+          {{ item.label }}
         </div>
       </div>
     </div>
@@ -30,17 +30,27 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, PropType, watch, reactive } from 'vue';
+import {
+  defineComponent,
+  ref,
+  computed,
+  PropType,
+  watch,
+  reactive,
+  onMounted,
+  onBeforeUnmount,
+  nextTick,
+} from 'vue';
 
-export interface DropdownItem {
-  value: string;
+export interface DropdownItemProps {
+  label: string;
   [key: string]: any;
 }
 
 export interface DropdownProps {
   target?: HTMLElement | null;
   title?: string;
-  dropdownList?: DropdownItem[];
+  dropdownList?: DropdownItemProps[];
   disabled?: boolean;
   open?: boolean;
 }
@@ -50,7 +60,7 @@ export default defineComponent({
   props: {
     target: { type: Object as PropType<HTMLElement | null>, default: null },
     title: { type: String, default: '' },
-    dropdownList: { type: Array as PropType<DropdownItem[]>, default: () => [] },
+    dropdownList: { type: Array as PropType<DropdownItemProps[]>, default: () => [] },
     disabled: { type: Boolean, default: false },
     open: { type: Boolean, default: false },
   },
@@ -62,21 +72,47 @@ export default defineComponent({
     const dropdownStyles = reactive({ top: '0px', left: '0px', position: 'absolute' });
 
     const updatePosition = () => {
-      if (props.target) {
+      if (props.target && root.value) {
         const rect = props.target.getBoundingClientRect();
-        dropdownStyles.top = `${rect.bottom + 8}px`;
-        dropdownStyles.left = `${rect.left}px`;
+        dropdownStyles.top = `${rect.bottom + 8 + window.scrollY}px`;
+        dropdownStyles.left = `${rect.left + window.scrollX}px`;
+        dropdownStyles.position = 'absolute';
+        dropdownStyles.transform = 'translateX(-50%)';
       }
     };
 
     watch(
       () => props.open,
       (val) => {
-        if (val) updatePosition();
+        if (val) {
+          nextTick(() => updatePosition());
+        }
       }
     );
 
-    return { root, isOpen, dropdownStyles, title: props.title, dropdownList: props.dropdownList };
+    watch(
+      () => props.target,
+      (newT) => {
+        if (isOpen.value && newT) {
+          nextTick(() => updatePosition());
+        }
+      }
+    );
+
+    const onWindowChange = () => {
+      if (isOpen.value) updatePosition();
+    };
+
+    onMounted(() => {
+      window.addEventListener('resize', onWindowChange);
+      window.addEventListener('scroll', onWindowChange, true); // capture scrolls
+    });
+
+    onBeforeUnmount(() => {
+      window.removeEventListener('resize', onWindowChange);
+      window.removeEventListener('scroll', onWindowChange, true);
+    });
+    return { root, isOpen, dropdownStyles };
   },
 });
 </script>
