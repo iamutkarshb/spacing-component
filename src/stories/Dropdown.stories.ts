@@ -87,5 +87,5 @@ Default.args = {
     { value: 'Unset all values' },
   ],
   disabled: false,
-  open: false,
+  open: true,
 };

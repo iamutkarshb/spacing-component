@@ -16,6 +16,9 @@ const preview: Preview = {
       // 'off' - skip a11y checks entirely
       test: 'todo',
     },
+    viewport: {
+      defaultViewport: 'responsive',
+    },
   },
 };
 

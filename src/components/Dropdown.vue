@@ -32,10 +32,15 @@
 <script lang="ts">
 import { defineComponent, ref, computed, PropType, watch, reactive } from 'vue';
 
+export interface DropdownItem {
+  value: string;
+  [key: string]: any;
+}
+
 export interface DropdownProps {
   target?: HTMLElement | null;
   title?: string;
-  dropdownList?: string[];
+  dropdownList?: DropdownItem[];
   disabled?: boolean;
   open?: boolean;
 }
@@ -45,7 +50,7 @@ export default defineComponent({
   props: {
     target: { type: Object as PropType<HTMLElement | null>, default: null },
     title: { type: String, default: '' },
-    dropdownList: { type: Array as PropType<string[]>, default: () => [] },
+    dropdownList: { type: Array as PropType<DropdownItem[]>, default: () => [] },
     disabled: { type: Boolean, default: false },
     open: { type: Boolean, default: false },
   },
