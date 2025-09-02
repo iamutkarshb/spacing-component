@@ -7,3 +7,5 @@ css: import 'spacing-component/dist/spacing-component.css'
 
 
 import { Spacing, type SpacingProps } from 'spacing-component'
+
+npm install spacing-component
