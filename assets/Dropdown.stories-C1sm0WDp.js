@@ -1,4 +1,4 @@
-import{D as r}from"./Dropdown-Bkoy_nrU.js";import{r as l,w as p}from"./iframe-G2gOgW4D.js";import"./_plugin-vue_export-helper-DlAUqK2U.js";import"./preload-helper-CGE4UHPU.js";const v={title:"Components/Dropdown",component:r,tags:["autodocs"],argTypes:{title:{control:"text",description:"Label or title for the dropdown"},dropdownList:{control:"array",description:"Array of items displayed in the dropdown"},disabled:{control:"boolean",description:"Disables the dropdown if true"},open:{control:"boolean",description:"Controls whether the dropdown is open"}}},c=n=>({components:{Dropdown:r},setup(){const t=l(n.open),d=l(null),s=l(null),a=()=>{t.value=!t.value},i=o=>{console.log("Selected item:",o),s.value=o};return p(()=>n.open,o=>{t.value=o}),{args:n,showDropdown:t,buttonRef:d,selectedItem:s,onItemClick:i,toggleDropdown:a}},template:`
+import{D as r}from"./Dropdown-UuCoTytJ.js";import{b as l,w as p}from"./vue-LExGCmp6.js";import"./_plugin-vue_export-helper-DlAUqK2U.js";const g={title:"Components/Dropdown",component:r,tags:["autodocs"],argTypes:{title:{control:"text",description:"Label or title for the dropdown"},dropdownList:{control:"array",description:"Array of items displayed in the dropdown"},disabled:{control:"boolean",description:"Disables the dropdown if true"},open:{control:"boolean",description:"Controls whether the dropdown is open"}}},c=n=>({components:{Dropdown:r},setup(){const t=l(n.open),d=l(null),s=l(null),a=()=>{t.value=!t.value},i=o=>{console.log("Selected item:",o),s.value=o};return p(()=>n.open,o=>{t.value=o}),{args:n,showDropdown:t,buttonRef:d,selectedItem:s,onItemClick:i,toggleDropdown:a}},template:`
     <div >
     <div style="display: flex; gap: 8px; align-items: center">
       <button ref="buttonRef" @click="toggleDropdown">Open Suggestions</button>
@@ -52,4 +52,4 @@ import{D as r}from"./Dropdown-Bkoy_nrU.js";import{r as l,w as p}from"./iframe-G2
       />
     </div>
   \`
-})`,...e.parameters?.docs?.source}}};const b=["Default"];export{e as Default,b as __namedExportsOrder,v as default};
+})`,...e.parameters?.docs?.source}}};const v=["Default"];export{e as Default,v as __namedExportsOrder,g as default};
