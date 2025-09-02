@@ -13,5 +13,11 @@ const config: StorybookConfig = {
     name: '@storybook/vue3-vite',
     options: {},
   },
+
+  async viteFinal(viteConfig) {
+    viteConfig.base = '/spacing-component/';
+    return viteConfig;
+  },
 };
+
 export default config;

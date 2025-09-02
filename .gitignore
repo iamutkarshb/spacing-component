@@ -3,6 +3,7 @@
 .pnp.js
 *.tgz
 storybook-static/
+ghpages-root/
 
 /coverage
 

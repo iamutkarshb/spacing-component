@@ -19,7 +19,7 @@
     "lint": "eslint 'src/**/*.{js,ts,vue}' --fix",
     "format": "prettier --write 'src/**/*.{ts,vue,md,json}'",
     "predeploy": "npm run build-storybook",
-    "deploy-storybook": "gh-pages -d storybook-static"
+    "deploy": "gh-pages -d storybook-static"
   },
   "repository": {
     "type": "git",
@@ -37,7 +37,7 @@
   "bugs": {
     "url": "https://github.com/iamutkarshb/spacing-component/issues"
   },
-  "homepage": "https://github.com/iamutkarshb/spacing-component",
+  "homepage": "https://iamutkarshb.github.io/spacing-component",
   "peerDependencies": {
     "vue": "^3.0.0"
   },
