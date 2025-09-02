@@ -1,4 +1,4 @@
-import Spacing, { SpacingProps, SpacingCustomItemProps } from '@/components/Spacing.vue';
+import Spacing, { SpacingProps } from '@/components/Spacing.vue';
 import type { Meta, StoryFn } from '@storybook/vue3';
 import { ref } from 'vue';
 
@@ -90,7 +90,5 @@ Default.args = {
       left: false,
     },
   },
-  customOptions: [
-    { label: 'Apply Small (8px) to All', applyToAll: false, valueToApply: '8px' },
-  ] as SpacingCustomItemProps[],
+  customOptions: [{ label: 'Apply Small (8px) to All', applyToAll: false, valueToApply: '8px' }],
 };

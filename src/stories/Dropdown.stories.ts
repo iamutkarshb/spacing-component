@@ -8,19 +8,19 @@ export default {
   tags: ['autodocs'],
   argTypes: {
     title: {
-      control: 'text',
+      control: { type: 'text' },
       description: 'Label or title for the dropdown',
     },
     dropdownList: {
-      control: 'array',
+      control: { type: 'object' },
       description: 'Array of items displayed in the dropdown',
     },
     disabled: {
-      control: 'boolean',
+      control: { type: 'boolean' },
       description: 'Disables the dropdown if true',
     },
     open: {
-      control: 'boolean',
+      control: { type: 'boolean' },
       description: 'Controls whether the dropdown is open',
     },
   },
