@@ -4,7 +4,6 @@
       v-if="isOpen"
       class="dropdown"
       ref="root"
-      @keydown="onKeydown"
       tabindex="-1"
       role="dialog"
       aria-label="Spacing suggestions"
@@ -40,6 +39,7 @@ import {
   onMounted,
   onBeforeUnmount,
   nextTick,
+  type CSSProperties,
 } from 'vue';
 
 export interface DropdownItemProps {
@@ -69,16 +69,23 @@ export default defineComponent({
     const root = ref<HTMLElement | null>(null);
     const isOpen = computed(() => props.open && !props.disabled);
 
-    const dropdownStyles = reactive({ top: '0px', left: '0px', position: 'absolute' });
+    const dropdownStyles = reactive<CSSProperties>({
+      top: '0px',
+      left: '0px',
+      position: 'absolute',
+      transform: 'translateX(-50%)',
+    });
 
     const updatePosition = () => {
       if (props.target && root.value) {
         const rect = props.target.getBoundingClientRect();
         dropdownStyles.top = `${rect.bottom + 8 + window.scrollY}px`;
         dropdownStyles.left = `${rect.left + rect.width / 2 + window.scrollX}px`;
-        dropdownStyles.position = 'absolute';
-        dropdownStyles.transform = 'translateX(-50%)';
       }
+    };
+
+    const onWindowChange = () => {
+      if (isOpen.value) updatePosition();
     };
 
     watch(
@@ -98,10 +105,6 @@ export default defineComponent({
         }
       }
     );
-
-    const onWindowChange = () => {
-      if (isOpen.value) updatePosition();
-    };
 
     onMounted(() => {
       window.addEventListener('resize', onWindowChange);

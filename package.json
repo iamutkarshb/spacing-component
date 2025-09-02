@@ -1,6 +1,6 @@
 {
   "name": "spacing-component",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A Vue 3 component library for spacing utilities",
   "main": "./dist/spacing-component.cjs.js",
   "module": "./dist/spacing-component.es.js",
@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "vite build && vue-tsc --declaration --emitDeclarationOnly --outDir dist/types",
+    "build": "vite build && vue-tsc -p tsconfig.json",
     "type-check": "vue-tsc --noEmit",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",

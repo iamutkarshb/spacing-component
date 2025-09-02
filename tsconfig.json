@@ -7,8 +7,9 @@
     "jsx": "preserve",
     "sourceMap": true,
     "declaration": true,
-    "declarationDir": "dist/types",
-    "emitDeclarationOnly": false,
+    "declarationMap": false,
+    "outDir": "dist/types",
+    "emitDeclarationOnly": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
@@ -16,9 +17,16 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@components/*": ["./src/components/*"],
+      "@components/*": ["./src/components/*"]
     }
   },
-  "include": ["src/**/*", "stories/Spacing.stories.ts"],
-  "exclude": ["node_modules", "dist", "storybook-static", "src/**/*.stories.ts", "src/**/*.stories.tsx"]
+  "include": ["src/**/*"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "storybook-static",
+    "src/**/*.stories.ts",
+    "src/**/*.stories.tsx",
+    "stories/**/*"
+  ]
 }

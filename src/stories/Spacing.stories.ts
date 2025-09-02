@@ -73,7 +73,7 @@ Default.args = {
     padding: '20px',
   },
   disableSuggestion: {
-    margin: true,
+    margin: false,
     padding: false,
   },
   readOnlyFields: {

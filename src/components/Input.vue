@@ -53,11 +53,6 @@ export default defineComponent({
     const internalValue = ref(props.modelValue);
     const errorMessage = ref<string | null>(null);
 
-    watch(
-      () => props.modelValue,
-      (val) => (internalValue.value = val)
-    );
-
     const onInput = (e: Event) => {
       const val = (e.target as HTMLInputElement).value;
       internalValue.value = val;
@@ -66,6 +61,11 @@ export default defineComponent({
     };
 
     const onEnter = () => inputRef.value?.blur();
+
+    watch(
+      () => props.modelValue,
+      (val) => (internalValue.value = val)
+    );
 
     return {
       internalValue,

@@ -1,7 +1,9 @@
+import { Field } from '@/components/Spacing.vue';
+
 const createFields = (
   prefix: 'padding' | 'margin',
   offsets: { vertical: string; horizontal: string }
-) => [
+): Field[] => [
   {
     side: 'top',
     style: { top: offsets.vertical, left: '50%', transform: 'translateX(-50%)', zIndex: 1000 },
@@ -13,7 +15,7 @@ const createFields = (
       bottom: offsets.vertical,
       left: '50%',
       transform: 'translateX(-50%)',
-      zIndex: 1000,
+      zIndex: '1000',
     },
     title: `${prefix}-bottom`,
   },
@@ -23,7 +25,7 @@ const createFields = (
       left: offsets.horizontal,
       top: '50%',
       transform: 'translateY(-50%)',
-      zIndex: 1000,
+      zIndex: '1000',
     },
     title: `${prefix}-left`,
   },
@@ -33,7 +35,7 @@ const createFields = (
       right: offsets.horizontal,
       top: '50%',
       transform: 'translateY(-50%)',
-      zIndex: 1000,
+      zIndex: '1000',
     },
     title: `${prefix}-right`,
   },
