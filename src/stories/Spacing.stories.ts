@@ -20,6 +20,14 @@ export default {
       control: 'object',
       description: 'Array of custom dropdown options',
     },
+    disableSuggestion: {
+      control: 'object',
+      description: 'Disable suggestions dropdown for margin and padding',
+    },
+    readOnlyFields: {
+      control: 'object',
+      description: 'Make the input-field read-only',
+    },
   },
 } as Meta<typeof Spacing>;
 
@@ -61,8 +69,28 @@ Default.args = {
     },
   },
   defaultValue: {
-    margin: '10px',
-    padding: '10px',
+    margin: '20px',
+    padding: '20px',
   },
-  customOptions: [] as SpacingCustomItemProps[],
+  disableSuggestion: {
+    margin: true,
+    padding: false,
+  },
+  readOnlyFields: {
+    margin: {
+      top: false,
+      bottom: false,
+      right: false,
+      left: false,
+    },
+    padding: {
+      top: false,
+      bottom: false,
+      right: false,
+      left: false,
+    },
+  },
+  customOptions: [
+    { label: 'Apply Small (8px) to All', applyToAll: false, valueToApply: '8px' },
+  ] as SpacingCustomItemProps[],
 };

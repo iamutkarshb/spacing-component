@@ -79,12 +79,12 @@ export const Default = Template.bind({});
 Default.args = {
   title: 'Suggestions',
   dropdownList: [
-    { value: 'Set this value to 20px' },
-    { value: 'Set all value to this value' },
-    { value: 'Set this value to auto' },
-    { value: 'Set all values to auto' },
-    { value: 'Unset this value' },
-    { value: 'Unset all values' },
+    { label: 'Set this value to 20px' },
+    { label: 'Set all value to this value' },
+    { label: 'Set this value to auto' },
+    { label: 'Set all values to auto' },
+    { label: 'Unset this value' },
+    { label: 'Unset all values' },
   ],
   disabled: false,
   open: true,

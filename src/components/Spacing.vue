@@ -14,6 +14,7 @@
         @keydown.enter="(e) => handleChange('margin', item.side, e.target.value)"
         placeholder="0px"
         :title="item.title"
+        :readonly="readOnlyFields.margin[item.side]"
       />
       <img
         src="../assets/icons/dropdownIcon.svg"
@@ -40,6 +41,7 @@
           @keydown.enter="(e) => handleChange('padding', item.side, e.target.value)"
           placeholder="0px"
           :title="item.title"
+          :readonly="readOnlyFields.padding[item.side] || false"
         />
         <img
           src="../assets/icons/dropdownIcon.svg"
@@ -60,6 +62,9 @@
       :target="dropdownTarget"
       title="Suggestions"
       @selected="onDropdownSelected"
+      :disabled="
+        disableSuggestion?.[activeGroup] || readOnlyFields?.[activeGroup]?.[activeSide] || false
+      "
     />
   </div>
 </template>
@@ -80,33 +85,48 @@ import Dropdown from './Dropdown.vue';
 import Input from './Input.vue';
 import { createFields, isValidCssValue } from '@/utils/utils';
 
-type SizeInput = string | number;
-
 export interface SpacingCustomItemProps {
   label: string;
   applyToAll: boolean;
   valueToApply: string;
 }
 
-export interface SpacingValue {
+export interface SpacingValueProps {
   margin?: {
-    top?: SizeInput;
-    right?: SizeInput;
-    bottom?: SizeInput;
-    left?: SizeInput;
+    top?: string;
+    right?: string;
+    bottom?: string;
+    left?: string;
   };
   padding?: {
-    top?: SizeInput;
-    right?: SizeInput;
-    bottom?: SizeInput;
-    left?: SizeInput;
+    top?: string;
+    right?: string;
+    bottom?: string;
+    left?: string;
+  };
+}
+
+export interface SpacingReadOnlyFieldProps {
+  margin?: {
+    top?: boolean;
+    right?: boolean;
+    bottom?: boolean;
+    left?: boolean;
+  };
+  padding?: {
+    top?: boolean;
+    right?: boolean;
+    bottom?: boolean;
+    left?: boolean;
   };
 }
 
 export interface SpacingProps {
-  value?: SpacingValue;
-  defaultValue?: SpacingValue | { margin?: string; padding?: string };
+  value: SpacingValueProps;
+  defaultValue: { margin?: string; padding?: string };
   customOptions?: SpacingCustomItemProps[];
+  disableSuggestion: { margin?: boolean; padding?: boolean };
+  readOnlyFields?: SpacingReadOnlyFieldProps;
 }
 
 export default defineComponent({
@@ -114,7 +134,7 @@ export default defineComponent({
   components: { Dropdown, Input },
   props: {
     value: {
-      type: Object as PropType<SpacingValue>,
+      type: Object as PropType<SpacingValueProps>,
       default: undefined,
     },
     defaultValue: {
@@ -127,6 +147,30 @@ export default defineComponent({
     customOptions: {
       type: Array as PropType<SpacingCustomItemProps[]>,
       default: () => [],
+    },
+    disableSuggestion: {
+      type: Object as PropType<Record<string, boolean>>,
+      default: () => ({
+        margin: false,
+        padding: false,
+      }),
+    },
+    readOnlyFields: {
+      type: Object as PropType<SpacingReadOnlyFieldProps>,
+      default: () => ({
+        margin: {
+          top: false,
+          right: false,
+          bottom: false,
+          left: false,
+        },
+        padding: {
+          top: false,
+          right: false,
+          bottom: false,
+          left: false,
+        },
+      }),
     },
   },
   emits: ['onUpdate'],
@@ -272,11 +316,13 @@ export default defineComponent({
       current,
       marginFields,
       paddingFields,
-      handleChange,
       activeGroup,
+      activeSide,
       isDropdownOpen,
       dropdownTarget,
       dropdownList,
+
+      handleChange,
       openDropdown,
       onDropdownSelected,
     };
@@ -336,9 +382,9 @@ export default defineComponent({
   padding: 47px 96px;
 }
 .responsive-box {
-  width: 100%;
   flex: 1;
-  width: 213px;
+  width: 100vw;
+  max-width: 213px;
   height: 40px;
   border-radius: 5px;
   background: #fff;
@@ -350,13 +396,11 @@ export default defineComponent({
 @media (max-width: 768px) {
   .responsive-box {
     max-width: 180px;
-    width: 100%;
   }
 }
 @media (max-width: 480px) {
   .responsive-box {
     max-width: 140px;
-    width: 100%;
   }
 }
 </style>

@@ -75,7 +75,7 @@ export default defineComponent({
       if (props.target && root.value) {
         const rect = props.target.getBoundingClientRect();
         dropdownStyles.top = `${rect.bottom + 8 + window.scrollY}px`;
-        dropdownStyles.left = `${rect.left + window.scrollX}px`;
+        dropdownStyles.left = `${rect.left + rect.width / 2 + window.scrollX}px`;
         dropdownStyles.position = 'absolute';
         dropdownStyles.transform = 'translateX(-50%)';
       }
